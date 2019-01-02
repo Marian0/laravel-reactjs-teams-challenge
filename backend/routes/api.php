@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::resource('players', 'PlayersController');
+Route::resource('teams', 'TeamsController');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
