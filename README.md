@@ -1,4 +1,4 @@
-# Laravel + ReactJS Code Challenge
+# Laravel 5.7 + ReactJS Code Challenge
 
 This repository is an implementation created by me for this code challenge.
 
