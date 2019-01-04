@@ -17,14 +17,13 @@ class TeamsController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
+    public function team_players($id, Request $request)
     {
-        //
+        $team = Team::with('players')->findOrFail($id);
+
+        return response()->json([
+            'data' => new \App\Http\Resources\Team($team)
+        ]);
     }
 
     /**
