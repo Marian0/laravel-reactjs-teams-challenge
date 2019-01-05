@@ -3,17 +3,44 @@
 namespace Tests\Feature;
 
 use App\Models\Player;
+use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Passport\ClientRepository;
 
 class PlayerTest extends TestCase
 {
-    use WithFaker;
+    use WithFaker, DatabaseTransactions;
+
+    protected $headers = [];
+    protected $scopes = [];
+    protected $user;
+
+
+    public function setUp()
+    {
+        parent::setUp();
+        $clientRepository = new ClientRepository();
+        $client = $clientRepository->createPersonalAccessClient(
+            null, 'Test Personal Access Client', env('APP_URL')
+        );
+        DB::table('oauth_personal_access_clients')->insert([
+            'client_id' => $client->id,
+            'created_at' => new \DateTime(),
+            'updated_at' => new \DateTime(),
+        ]);
+        $this->user = factory(User::class)->create();
+        $token = $this->user->createToken('TestToken', $this->scopes)->accessToken;
+        $this->headers['Accept'] = 'application/json';
+        $this->headers['Authorization'] = 'Bearer '.$token;
+    }
 
     //Get players
     public function testGet()
     {
-        $response = $this->get('/api/players');
+        $response = $this->get('/api/players', $this->headers);
 
         //Valid response
         $response->assertStatus(200);
@@ -32,7 +59,7 @@ class PlayerTest extends TestCase
         $response = $this->json('POST', 'api/players', [
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
-        ]);
+        ], $this->headers);
 
         //Valid response
         $response
@@ -51,7 +78,7 @@ class PlayerTest extends TestCase
     //Update player
     public function testUpdatePlayer()
     {
-        $response = $this->get('/api/players');
+        $response = $this->get('/api/players', $this->headers);
 
         $players = $response->json('data');
 
@@ -84,7 +111,7 @@ class PlayerTest extends TestCase
     //Update player Wrong Team
     public function testUpdatePlayerWrongTeam()
     {
-        $response = $this->get('/api/players');
+        $response = $this->get('/api/players', $this->headers);
 
         $players = $response->json('data');
 
