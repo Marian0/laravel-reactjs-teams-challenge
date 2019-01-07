@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+console.log("posta", process.env, process.env.API_HOST);
+
 class App extends Component {
   render() {
     return (
