@@ -6,21 +6,20 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
-
-import {BrowserRouter as Router, Route} from 'react-router-dom';
-
+import {People, GroupWork, HelpOutline, ExitToApp} from '@material-ui/icons';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import PrivateRoute from '../Components/PrivateRoute';
-import HomePage from '../Components/HomePage';
+import TeamPage from '../Components/TeamPage';
+import AboutPage from '../Components/AboutPage';
+import PlayerPage from '../Components/PlayerPage';
 import LoginPage from '../Components/LoginPage';
 
 const drawerWidth = 240;
@@ -67,88 +66,94 @@ class App extends Component {
     };
 
     render() {
-        const { classes, theme } = this.props;
+        const {classes, theme} = this.props;
 
         const drawer = (
             <div>
-                <div className={classes.toolbar} />
-                <Divider />
+                <div className={classes.toolbar}/>
+                <Divider/>
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
-                </List>
-                <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
+                    <ListItem button component={Link} key="teams" to="/teams">
+                        <ListItemIcon><GroupWork/></ListItemIcon>
+                        <ListItemText primary="Teams"/>
+                    </ListItem>
+                    <ListItem button component={Link} key="players" to="/players">
+                        <ListItemIcon><People/></ListItemIcon>
+                        <ListItemText primary="Players"/>
+                    </ListItem>
+                    <ListItem button component={Link} key="about" to="/">
+                        <ListItemIcon><HelpOutline/></ListItemIcon>
+                        <ListItemText primary="About"/>
+                    </ListItem>
+
+                    <Divider/>
+                    <ListItem button component={Link} key="login" to="/login">
+                        <ListItemIcon><ExitToApp/></ListItemIcon>
+                        <ListItemText primary="Logout"/>
+                    </ListItem>
                 </List>
             </div>
         );
 
         return (
-            <div className={classes.root}>
-                <CssBaseline/>
-                <AppBar position="fixed" className={classes.appBar}>
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="Open drawer"
-                            onClick={this.handleDrawerToggle}
-                            className={classes.menuButton}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography variant="h6" color="inherit" noWrap>
-                            Responsive drawer
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <nav className={classes.drawer}>
-                    {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-                    <Hidden smUp implementation="css">
-                        <Drawer
-                            container={this.props.container}
-                            variant="temporary"
-                            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                            open={this.state.mobileOpen}
-                            onClose={this.handleDrawerToggle}
-                            classes={{
-                                paper: classes.drawerPaper,
-                            }}
-                        >
-                            {drawer}
-                        </Drawer>
-                    </Hidden>
-                    <Hidden xsDown implementation="css">
-                        <Drawer
-                            classes={{
-                                paper: classes.drawerPaper,
-                            }}
-                            variant="permanent"
-                            open
-                        >
-                            {drawer}
-                        </Drawer>
-                    </Hidden>
-                </nav>
-                <main className={classes.content}>
-                    <div className={classes.toolbar}/>
-                    <Router>
+            <Router>
+                <div className={classes.root}>
+                    <CssBaseline/>
+                    <AppBar position="fixed" className={classes.appBar}>
+                        <Toolbar>
+                            <IconButton
+                                color="inherit"
+                                aria-label="Open drawer"
+                                onClick={this.handleDrawerToggle}
+                                className={classes.menuButton}
+                            >
+                                <MenuIcon/>
+                            </IconButton>
+                            <Typography variant="h6" color="inherit" noWrap>
+                                Players Teams App
+                            </Typography>
+                        </Toolbar>
+                    </AppBar>
+                    <nav className={classes.drawer}>
+                        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+                        <Hidden smUp implementation="css">
+                            <Drawer
+                                container={this.props.container}
+                                variant="temporary"
+                                anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                                open={this.state.mobileOpen}
+                                onClose={this.handleDrawerToggle}
+                                classes={{
+                                    paper: classes.drawerPaper,
+                                }}
+                            >
+                                {drawer}
+                            </Drawer>
+                        </Hidden>
+                        <Hidden xsDown implementation="css">
+                            <Drawer
+                                classes={{
+                                    paper: classes.drawerPaper,
+                                }}
+                                variant="permanent"
+                                open
+                            >
+                                {drawer}
+                            </Drawer>
+                        </Hidden>
+                    </nav>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar}/>
+
                         <div>
-                            <PrivateRoute exact path="/" component={HomePage}/>
+                            <PrivateRoute exact path="/" component={AboutPage}/>
+                            <PrivateRoute exact path="/teams" component={TeamPage}/>
+                            <PrivateRoute exact path="/players" component={PlayerPage}/>
                             <Route path="/login" component={LoginPage}/>
                         </div>
-                    </Router>
-                </main>
-            </div>
+                    </main>
+                </div>
+            </Router>
         );
     }
 }
@@ -161,4 +166,4 @@ App.propTypes = {
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(App);
+export default withStyles(styles, {withTheme: true})(App);

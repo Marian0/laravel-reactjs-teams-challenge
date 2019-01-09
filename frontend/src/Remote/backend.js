@@ -1,7 +1,8 @@
 export const userService = {
     login,
     logout,
-    getPlayers
+    getPlayers,
+    getTeams
 };
 
 function login(username, password) {
@@ -55,6 +56,20 @@ function getPlayers() {
     };
 
     return fetch(`${process.env.REACT_APP_API_HOST}players`, requestOptions).then(handleResponse);
+}
+
+function getTeams() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept' : 'application/json',
+            'Authorization': `Bearer ${user.access_token}`,
+        },
+    };
+
+    return fetch(`${process.env.REACT_APP_API_HOST}teams`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
