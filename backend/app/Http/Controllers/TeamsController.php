@@ -14,7 +14,9 @@ class TeamsController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'data' => \App\Http\Resources\Team::collection(Team::all())
+        ]);
     }
 
     public function team_players($id, Request $request)
