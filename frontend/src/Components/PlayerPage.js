@@ -37,19 +37,19 @@ class PlayerPage extends Component {
                 <List>
 
 
-                    {players.map((user) =>
+                    {players.map((player) =>
 
-                        <ListItem key={user.id}>
+                        <ListItem key={player.id}>
                             <ListItemAvatar>
                                 <Avatar>
-                                    {user.first_name.charAt(0)}
+                                    {player.first_name.charAt(0)}
                                 </Avatar>
                             </ListItemAvatar>
                             <ListItemText
-                                primary={user.first_name + ' ' + user.last_name}
+                                primary={player.first_name + ' ' + player.last_name}
                             />
                             <ListItemSecondaryAction>
-                                {user.team && user.team.name}
+                                {player.team && player.team.name}
                             </ListItemSecondaryAction>
                         </ListItem>
                     )}
