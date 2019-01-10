@@ -2,7 +2,17 @@ export const userService = {
     login,
     logout,
     getPlayers,
-    getTeams
+    getTeams,
+    syncPlayer
+};
+
+const getHeaders = () => {
+    let user = JSON.parse(localStorage.getItem('user'));
+    return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${user.access_token}`,
+    }
 };
 
 function login(username, password) {
@@ -10,7 +20,7 @@ function login(username, password) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Accept' : 'application/json'
+            'Accept': 'application/json'
         },
         body: JSON.stringify({
             username: username,
@@ -45,31 +55,52 @@ function logout() {
 }
 
 function getPlayers() {
-    let user = JSON.parse(localStorage.getItem('user'));
     const requestOptions = {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept' : 'application/json',
-            'Authorization': `Bearer ${user.access_token}`,
-        },
+        headers: getHeaders(),
     };
 
     return fetch(`${process.env.REACT_APP_API_HOST}players`, requestOptions).then(handleResponse);
 }
 
 function getTeams() {
-    let user = JSON.parse(localStorage.getItem('user'));
     const requestOptions = {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept' : 'application/json',
-            'Authorization': `Bearer ${user.access_token}`,
-        },
+        headers: getHeaders()
     };
 
     return fetch(`${process.env.REACT_APP_API_HOST}teams`, requestOptions).then(handleResponse);
+}
+
+function syncPlayer(data) {
+
+    if (data.id) {
+        return editPlayer(data);
+    }
+
+    return createPlayer(data);
+}
+
+function createPlayer(data) {
+
+    const requestOptions = {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(data)
+    };
+
+    return fetch(`${process.env.REACT_APP_API_HOST}players`, requestOptions).then(handleResponse);
+}
+
+function editPlayer(data) {
+
+    const requestOptions = {
+        method: 'PATCH',
+        headers: getHeaders(),
+        body: JSON.stringify(data)
+    };
+
+    return fetch(`${process.env.REACT_APP_API_HOST}players/${data.id}`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
