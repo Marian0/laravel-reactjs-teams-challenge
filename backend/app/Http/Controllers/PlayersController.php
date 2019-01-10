@@ -30,7 +30,7 @@ class PlayersController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
-            'team_id' => 'exists:teams',
+            'team_id' => 'exists:teams,id',
         ]);
 
         $player = Player::create($request->all());
