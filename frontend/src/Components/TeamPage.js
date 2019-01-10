@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import List from '@material-ui/core/List';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItem from '@material-ui/core/ListItem';
+import Button from '@material-ui/core/Button';
 
 import {userService} from '../Remote/backend';
 
@@ -29,8 +30,9 @@ class TeamPage extends Component {
         const {teams} = this.state;
         return (
             <div className="col-md-6 col-md-offset-3">
+                {teams.loading && <LinearProgress/>}
                 <h1>Teams</h1>
-                {teams.loading && <CircularProgress/>}
+                <Button variant="contained" color="primary" onClick={() => alert("Soon..")}>New Team</Button>
                 {teams.length &&
 
                 <List>

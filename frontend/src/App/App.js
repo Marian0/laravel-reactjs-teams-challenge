@@ -19,7 +19,7 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import PrivateRoute from '../Components/PrivateRoute';
 import TeamPage from '../Components/TeamPage';
 import AboutPage from '../Components/AboutPage';
-import PlayerPage from '../Components/PlayerPage';
+import PlayerList from '../Components/Players/PlayerList';
 import LoginPage from '../Components/LoginPage';
 
 const drawerWidth = 240;
@@ -148,7 +148,7 @@ class App extends Component {
                         <div>
                             <PrivateRoute exact path="/" component={AboutPage}/>
                             <PrivateRoute exact path="/teams" component={TeamPage}/>
-                            <PrivateRoute exact path="/players" component={PlayerPage}/>
+                            <PrivateRoute exact path="/players" component={PlayerList}/>
                             <Route path="/login" component={LoginPage}/>
                         </div>
                     </main>

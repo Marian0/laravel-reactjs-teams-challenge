@@ -1,15 +1,17 @@
 import React, {Component} from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import List from '@material-ui/core/List';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItem from '@material-ui/core/ListItem';
-import {userService} from '../Remote/backend';
+import {userService} from '../../Remote/backend';
+import PlayerForm from "./PlayerForm";
+import Button from '@material-ui/core/Button';
 
 
-class PlayerPage extends Component {
+class PlayerList extends Component {
     constructor(props) {
         super(props);
 
@@ -57,10 +59,10 @@ class PlayerPage extends Component {
         const {players, showLoading} = this.state;
         return (
             <div>
+                {showLoading && <LinearProgress/>}
                 <h1>Players List</h1>
+                <Button variant="contained" color="primary" onClick={() => this.setState({showForm: true, player: {}})}>New player</Button>
 
-                <button onClick={() => this.setState({showForm: true, player: {}})}>Create player</button>
-                {showLoading && <CircularProgress/>}
                 {players.length > 0 &&
 
                 <List>
@@ -117,7 +119,6 @@ class PlayerPage extends Component {
                     players: prev.players.map((el) => {
 
                         if (el.id === this.state.player.id) {
-                            console.log(el.id, this.state.player.id);
                             return this.state.player;
                         }
 
@@ -137,42 +138,23 @@ class PlayerPage extends Component {
         });
     };
 
-    /**
-     * Render the edit/create form
-     * @returns {*}
-     */
-    renderForm = () => {
-
-        return (
-            <form onSubmit={this.handleFormSubmit}>
-                <p>Name</p>
-                <input name="first_name"
-                       type="text"
-                       value={this.state.player.first_name}
-                       onChange={this.handleInputChange}/>
-
-                <p>Last Name</p>
-                <input name="last_name" type="text" value={this.state.player.last_name} onChange={this.handleInputChange}/>
-
-                <p>Team Picker</p>
-                ...
-
-                <button type="submit">Save</button>
-                <button onClick={() => this.setState({showForm: false})}>Close</button>
-
-            </form>
-
-        );
+    handleCloseForm = () => {
+        this.setState({showForm: false});
     };
 
 
     render() {
         if (this.state.showForm) {
-            return this.renderForm();
+            return <PlayerForm
+                player={this.state.player}
+                handleFormSubmit={this.handleFormSubmit}
+                handleInputChange={this.handleInputChange}
+                handleCloseForm={this.handleCloseForm}
+            />
         }
 
         return this.renderList();
     }
 }
 
-export default PlayerPage;
+export default PlayerList;
