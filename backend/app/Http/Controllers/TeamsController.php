@@ -79,7 +79,20 @@ class TeamsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required',
+        ]);
+
+        $player = Team::find($id)->firstOrFail();
+
+        $player->fill($request->all());
+
+        $player->save();
+
+        return response()->json([
+            'message' => 'Team has been updated',
+            'data' => new \App\Http\Resources\Player($player)
+        ]);
     }
 
     /**
