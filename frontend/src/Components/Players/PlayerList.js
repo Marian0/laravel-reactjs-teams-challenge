@@ -59,7 +59,7 @@ class PlayerList extends Component {
      * @param player
      */
     handlePlayerClick = (player) => {
-        player['team_id'] = player.team.id || "";
+        player['team_id'] = player.team? player.team.id || "" : "";
 
         this.setState({
             player,
