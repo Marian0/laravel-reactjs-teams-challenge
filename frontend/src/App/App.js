@@ -17,7 +17,7 @@ import {withStyles} from '@material-ui/core/styles';
 import {People, GroupWork, HelpOutline, ExitToApp} from '@material-ui/icons';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import PrivateRoute from '../Components/PrivateRoute';
-import TeamPage from '../Components/TeamPage';
+import TeamList from '../Components/Teams/TeamList';
 import AboutPage from '../Components/AboutPage';
 import PlayerList from '../Components/Players/PlayerList';
 import LoginPage from '../Components/LoginPage';
@@ -147,7 +147,7 @@ class App extends Component {
 
                         <div>
                             <PrivateRoute exact path="/" component={AboutPage}/>
-                            <PrivateRoute exact path="/teams" component={TeamPage}/>
+                            <PrivateRoute exact path="/teams" component={TeamList}/>
                             <PrivateRoute exact path="/players" component={PlayerList}/>
                             <Route path="/login" component={LoginPage}/>
                         </div>

@@ -10,16 +10,25 @@ import {userService} from '../../Remote/backend';
 import PlayerForm from "./PlayerForm";
 import Button from '@material-ui/core/Button';
 
+const initPlayer = {
+    first_name: "",
+    last_name: "",
+    team_id: ""
+};
 
 class PlayerList extends Component {
+
+
+
     constructor(props) {
         super(props);
 
         this.state = {
             players: [],
+            teams: [],
             showForm: false,
             showLoading: false,
-            player: {}
+            player: initPlayer
         };
     }
 
@@ -39,12 +48,18 @@ class PlayerList extends Component {
             players: response.data,
             showLoading: false
         }));
+
+        userService.getTeams().then(response => this.setState({
+            teams: response.data,
+        }));
     };
     /**
      * Click on player on the lists will open the edit form
      * @param player
      */
     handlePlayerClick = (player) => {
+        player['team_id'] = player.team.id || "";
+
         this.setState({
             player,
             showForm: true
@@ -61,7 +76,7 @@ class PlayerList extends Component {
             <div>
                 {showLoading && <LinearProgress/>}
                 <h1>Players List</h1>
-                <Button variant="contained" color="primary" onClick={() => this.setState({showForm: true, player: {}})}>New player</Button>
+                <Button variant="contained" color="primary" onClick={() => this.setState({showForm: true, player: initPlayer})}>New player</Button>
 
                 {players.length > 0 &&
 
@@ -147,6 +162,7 @@ class PlayerList extends Component {
         if (this.state.showForm) {
             return <PlayerForm
                 player={this.state.player}
+                teams={this.state.teams}
                 handleFormSubmit={this.handleFormSubmit}
                 handleInputChange={this.handleInputChange}
                 handleCloseForm={this.handleCloseForm}
