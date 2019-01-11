@@ -6,6 +6,10 @@ export const userService = {
     syncPlayer
 };
 
+/**
+ * Set the proper headers to communicate with API and set the Bearer if user is authenticated
+ * @returns {{"Content-Type": string, Accept: string, Authorization: string}}
+ */
 const getHeaders = () => {
     let user = JSON.parse(localStorage.getItem('user'));
     return {
@@ -15,6 +19,36 @@ const getHeaders = () => {
     }
 };
 
+/**
+ * Handles received response from API
+ * @param response
+ * @returns {*}
+ */
+function handleResponse(response) {
+    return response.text().then(text => {
+        const data = text && JSON.parse(text);
+        if (!response.ok) {
+            if (response.status === 401) {
+                // auto logout if 401 response returned from api
+                console.log(data.error);
+                logout();
+                // window.confirm().reload(true);
+            }
+
+            const error = (data && data.message) || response.statusText;
+            return Promise.reject(error);
+        }
+
+        return data;
+    });
+}
+
+/**
+ * Login
+ * @param username
+ * @param password
+ * @returns {Promise<Response>}
+ */
 function login(username, password) {
     const requestOptions = {
         method: 'POST',
@@ -49,11 +83,18 @@ function login(username, password) {
         });
 }
 
+/**
+ * Logout
+ */
 function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
 }
 
+/**
+ * Get Players
+ * @returns {Promise<Response>}
+ */
 function getPlayers() {
     const requestOptions = {
         method: 'GET',
@@ -63,6 +104,10 @@ function getPlayers() {
     return fetch(`${process.env.REACT_APP_API_HOST}players`, requestOptions).then(handleResponse);
 }
 
+/**
+ * Get Teams
+ * @returns {Promise<Response>}
+ */
 function getTeams() {
     const requestOptions = {
         method: 'GET',
@@ -72,6 +117,12 @@ function getTeams() {
     return fetch(`${process.env.REACT_APP_API_HOST}teams`, requestOptions).then(handleResponse);
 }
 
+
+/**
+ * Guess if there is needed to do a creation or an update request
+ * @param data
+ * @returns {*}
+ */
 function syncPlayer(data) {
 
     if (data.id) {
@@ -81,6 +132,11 @@ function syncPlayer(data) {
     return createPlayer(data);
 }
 
+/**
+ * Handles Player creation
+ * @param data
+ * @returns {Promise<Response>}
+ */
 function createPlayer(data) {
 
     const requestOptions = {
@@ -92,6 +148,11 @@ function createPlayer(data) {
     return fetch(`${process.env.REACT_APP_API_HOST}players`, requestOptions).then(handleResponse);
 }
 
+/**
+ * Handles player edition
+ * @param data
+ * @returns {Promise<Response>}
+ */
 function editPlayer(data) {
 
     const requestOptions = {
@@ -103,21 +164,3 @@ function editPlayer(data) {
     return fetch(`${process.env.REACT_APP_API_HOST}players/${data.id}`, requestOptions).then(handleResponse);
 }
 
-function handleResponse(response) {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
-        if (!response.ok) {
-            if (response.status === 401) {
-                // auto logout if 401 response returned from api
-                console.log(data.error);
-                logout();
-                // window.confirm().reload(true);
-            }
-
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-        }
-
-        return data;
-    });
-}
