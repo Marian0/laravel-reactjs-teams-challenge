@@ -30,7 +30,7 @@ class PlayersController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
-            'team_id' => 'exists:teams,id',
+            'team_id' => 'nullable|numeric|exists:teams,id',
         ]);
 
         $player = Player::create($request->all());
@@ -62,7 +62,7 @@ class PlayersController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'team_id' => 'numeric|exists:players',
+            'team_id' => 'nullable|numeric|exists:teams,id',
         ]);
 
         $player = Player::find($id)->firstOrFail();
