@@ -28,6 +28,7 @@ class PlayerList extends Component {
             teams: [],
             showForm: false,
             showLoading: false,
+            showFormLoading: false,
             player: initPlayer
         };
     }
@@ -122,10 +123,16 @@ class PlayerList extends Component {
      */
     handleFormSubmit = (event) => {
         event.preventDefault();
+
+        this.setState({
+            showFormLoading: true
+        });
+
         userService.syncPlayer(this.state.player).then((response) => {
 
             this.setState({
                 showForm: false,
+                showFormLoading: false
             });
 
             //Editing players => replace on state
@@ -163,6 +170,7 @@ class PlayerList extends Component {
             return <PlayerForm
                 player={this.state.player}
                 teams={this.state.teams}
+                showFormLoading={this.state.showFormLoading}
                 handleFormSubmit={this.handleFormSubmit}
                 handleInputChange={this.handleInputChange}
                 handleCloseForm={this.handleCloseForm}

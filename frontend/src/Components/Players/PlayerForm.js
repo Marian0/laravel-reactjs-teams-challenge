@@ -5,10 +5,11 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const PlayerForm = (props) => {
 
-    const {player} = props;
+    const {player, showFormLoading} = props;
 
     const renderOptions = (teams) => {
 
@@ -19,6 +20,7 @@ const PlayerForm = (props) => {
 
     return (
         <form onSubmit={props.handleFormSubmit}>
+            {showFormLoading && <LinearProgress/>}
             <h1>
                 {player.id && "Edit Player"}
                 {!player.id && "New Player"}
