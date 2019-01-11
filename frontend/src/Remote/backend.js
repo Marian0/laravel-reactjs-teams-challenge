@@ -3,7 +3,8 @@ export const userService = {
     logout,
     getPlayers,
     getTeams,
-    syncPlayer
+    syncPlayer,
+    syncTeam
 };
 
 /**
@@ -164,3 +165,49 @@ function editPlayer(data) {
     return fetch(`${process.env.REACT_APP_API_HOST}players/${data.id}`, requestOptions).then(handleResponse);
 }
 
+
+/**
+ * Guess if there is needed to do a creation or an update request
+ * @param data
+ * @returns {*}
+ */
+function syncTeam(data) {
+
+    if (data.id) {
+        return editTeam(data);
+    }
+
+    return createTeam(data);
+}
+
+/**
+ * Handles Team creation
+ * @param data
+ * @returns {Promise<Response>}
+ */
+function createTeam(data) {
+
+    const requestOptions = {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(data)
+    };
+
+    return fetch(`${process.env.REACT_APP_API_HOST}teams`, requestOptions).then(handleResponse);
+}
+
+/**
+ * Handles team edition
+ * @param data
+ * @returns {Promise<Response>}
+ */
+function editTeam(data) {
+
+    const requestOptions = {
+        method: 'PATCH',
+        headers: getHeaders(),
+        body: JSON.stringify(data)
+    };
+
+    return fetch(`${process.env.REACT_APP_API_HOST}teams/${data.id}`, requestOptions).then(handleResponse);
+}
