@@ -22,6 +22,7 @@ class TeamList extends Component {
             teams: [],
             team: initTeam,
             showLoading: false,
+            showFormLoading: false,
             showForm: false,
         };
     }
@@ -103,6 +104,7 @@ class TeamList extends Component {
         if (this.state.showForm) {
             return <TeamForm
                 team={this.state.team}
+                showFormLoading={this.state.showFormLoading}
                 handleFormSubmit={this.handleFormSubmit}
                 handleInputChange={this.handleInputChange}
                 handleCloseForm={this.handleCloseForm}
@@ -141,10 +143,16 @@ class TeamList extends Component {
      */
     handleFormSubmit = (event) => {
         event.preventDefault();
+
+        this.setState({
+            showFormLoading: true
+        });
+
         userService.syncTeam(this.state.team).then((response) => {
 
             this.setState({
                 showForm: false,
+                showFormLoading: false,
             });
 
             //Editing players => replace on state
