@@ -73,7 +73,7 @@ class TeamList extends Component {
                                 primary={team.name}
                             />
                             <ListItemSecondaryAction>
-                                {team.player_count ? team.player_count : 0}
+                                {team.player_count ? team.player_count : 0} players
                             </ListItemSecondaryAction>
                         </ListItem>
                     )
@@ -176,7 +176,19 @@ class TeamList extends Component {
 
 
         }, (error) => {
-            console.warn(error);
+            this.setState({
+                showFormLoading: false,
+            });
+
+            let message = error.message || "Problem detected";
+
+            if (error.errors) {
+                Object.keys(error.errors).forEach(function(key) {
+                    message += error.errors[key] + '. ';
+                });
+            }
+
+            alert(message);
         });
     };
 
