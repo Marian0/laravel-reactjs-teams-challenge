@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -9,6 +8,8 @@ import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import {userService} from '../../Remote/backend';
 import TeamForm from "./TeamForm";
+import {connect} from 'react-redux';
+import {hideLoadingBar, showLoadingBar} from "../../Redux/actions/loading";
 
 const initTeam = {
     name: "",
@@ -21,8 +22,6 @@ class TeamList extends Component {
         this.state = {
             teams: [],
             team: initTeam,
-            showLoading: false,
-            showFormLoading: false,
             showForm: false,
         };
     }
@@ -31,15 +30,14 @@ class TeamList extends Component {
      * Handles the API request to fill list with teams
      */
     loadTeams = () => {
+        this.props.showLoadingBar();
 
-        this.setState({
-            showLoading: true
+        userService.getTeams().then(response => {
+            this.setState({
+                teams: response.data
+            });
+            this.props.hideLoadingBar();
         });
-
-        userService.getTeams().then(response => this.setState({
-            showLoading: false,
-            teams: response.data
-        }));
     };
 
     /**
@@ -50,14 +48,7 @@ class TeamList extends Component {
     }
 
     renderTeams = () => {
-        const {showLoading, teams} = this.state;
-        if (showLoading) {
-            return <p>Loading teams...</p>;
-        }
-
-        if (teams.length === 0) {
-            return <p>No teams in our site. Please, add a new one.</p>
-        }
+        const {teams} = this.state;
 
         return (
             <List>
@@ -89,10 +80,8 @@ class TeamList extends Component {
      * @returns {*}
      */
     renderList() {
-        const {showLoading} = this.state;
         return (
             <div>
-                {showLoading && <LinearProgress/>}
                 <h1>Teams</h1>
                 <Button variant="contained" color="primary" onClick={this.handleNewBtnClicked}>New Team</Button>
                 {this.renderTeams()}
@@ -104,7 +93,6 @@ class TeamList extends Component {
         if (this.state.showForm) {
             return <TeamForm
                 team={this.state.team}
-                showFormLoading={this.state.showFormLoading}
                 handleFormSubmit={this.handleFormSubmit}
                 handleInputChange={this.handleInputChange}
                 handleCloseForm={this.handleCloseForm}
@@ -144,16 +132,15 @@ class TeamList extends Component {
     handleFormSubmit = (event) => {
         event.preventDefault();
 
-        this.setState({
-            showFormLoading: true
-        });
+        this.props.showLoadingBar();
 
         userService.syncTeam(this.state.team).then((response) => {
 
             this.setState({
                 showForm: false,
-                showFormLoading: false,
             });
+
+            this.props.hideLoadingBar();
 
             //Editing players => replace on state
             if (this.state.team.id) {
@@ -176,14 +163,12 @@ class TeamList extends Component {
 
 
         }, (error) => {
-            this.setState({
-                showFormLoading: false,
-            });
+            this.props.hideLoadingBar();
 
             let message = error.message || "Problem detected";
 
             if (error.errors) {
-                Object.keys(error.errors).forEach(function(key) {
+                Object.keys(error.errors).forEach(function (key) {
                     message += error.errors[key] + '. ';
                 });
             }
@@ -197,4 +182,9 @@ class TeamList extends Component {
     };
 }
 
-export default TeamList;
+const mapDispatchToProps = dispatch => ({
+    showLoadingBar: () => dispatch(showLoadingBar()),
+    hideLoadingBar: () => dispatch(hideLoadingBar())
+});
+
+export default connect(null, mapDispatchToProps)(TeamList);

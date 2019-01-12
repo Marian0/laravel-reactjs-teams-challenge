@@ -16,11 +16,13 @@ import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
 import {People, GroupWork, HelpOutline, ExitToApp} from '@material-ui/icons';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
-import PrivateRoute from '../Components/PrivateRoute';
-import TeamList from '../Components/Teams/TeamList';
-import AboutPage from '../Components/AboutPage';
-import PlayerList from '../Components/Players/PlayerList';
-import LoginPage from '../Components/LoginPage';
+import PrivateRoute from '../PrivateRoute';
+import TeamList from '../Teams/TeamList';
+import AboutPage from '../AboutPage';
+import PlayerList from '../Players/PlayerList';
+import LoginPage from '../LoginPage';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import {connect} from 'react-redux';
 
 const drawerWidth = 240;
 
@@ -65,7 +67,14 @@ class App extends Component {
         this.setState(state => ({mobileOpen: !state.mobileOpen}));
     };
 
+    renderLoadingBar = () => {
+        if (this.props.loading) {
+            return <LinearProgress />;
+        }
+    };
+
     render() {
+        console.log(this.props);
         const {classes, theme} = this.props;
 
         const drawer = (
@@ -113,6 +122,7 @@ class App extends Component {
                                 Players Teams App
                             </Typography>
                         </Toolbar>
+                        {this.renderLoadingBar()}
                     </AppBar>
                     <nav className={classes.drawer}>
                         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -144,7 +154,6 @@ class App extends Component {
                     </nav>
                     <main className={classes.content}>
                         <div className={classes.toolbar}/>
-
                         <div>
                             <PrivateRoute exact path="/" component={AboutPage}/>
                             <PrivateRoute exact path="/teams" component={TeamList}/>
@@ -166,4 +175,11 @@ App.propTypes = {
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, {withTheme: true})(App);
+const AppStyle = withStyles(styles, {withTheme: true})(App);
+
+const mapStateToProps = (state) => ({
+    loading: state.loading
+});
+
+
+export default connect(mapStateToProps, null)(AppStyle);

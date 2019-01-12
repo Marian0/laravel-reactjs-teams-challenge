@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -9,6 +8,8 @@ import ListItem from '@material-ui/core/ListItem';
 import {userService} from '../../Remote/backend';
 import PlayerForm from "./PlayerForm";
 import Button from '@material-ui/core/Button';
+import {showLoadingBar, hideLoadingBar} from "../../Redux/actions/loading";
+import {connect} from 'react-redux';
 
 const initPlayer = {
     first_name: "",
@@ -18,8 +19,6 @@ const initPlayer = {
 
 class PlayerList extends Component {
 
-
-
     constructor(props) {
         super(props);
 
@@ -27,8 +26,6 @@ class PlayerList extends Component {
             players: [],
             teams: [],
             showForm: false,
-            showLoading: false,
-            showFormLoading: false,
             player: initPlayer
         };
     }
@@ -41,17 +38,18 @@ class PlayerList extends Component {
      * Performs the API call to get players from server. Also, set loading true to show the spinner component
      */
     loadPlayers = () => {
-        this.setState({
-            showLoading: true
+
+        this.props.showLoadingBar();
+
+        userService.getPlayers().then(response => {
+            this.setState({
+                players: response.data,
+            });
+            this.props.hideLoadingBar();
         });
 
-        userService.getPlayers().then(response => this.setState({
-            players: response.data,
-            showLoading: false
-        }));
-
         userService.getTeams().then(response => this.setState({
-            teams: response.data,
+            teams: response.data
         }));
     };
     /**
@@ -72,10 +70,9 @@ class PlayerList extends Component {
      * @returns {*}
      */
     renderList = () => {
-        const {players, showLoading} = this.state;
+        const {players} = this.state;
         return (
             <div>
-                {showLoading && <LinearProgress/>}
                 <h1>Players List</h1>
                 <Button variant="contained" color="primary" onClick={() => this.setState({showForm: true, player: initPlayer})}>New player</Button>
 
@@ -124,16 +121,15 @@ class PlayerList extends Component {
     handleFormSubmit = (event) => {
         event.preventDefault();
 
-        this.setState({
-            showFormLoading: true
-        });
+        this.props.showLoadingBar();
 
         userService.syncPlayer(this.state.player).then((response) => {
 
             this.setState({
                 showForm: false,
-                showFormLoading: false
             });
+
+            this.props.hideLoadingBar();
 
             //Editing players => replace on state
             if (this.state.player.id) {
@@ -156,6 +152,7 @@ class PlayerList extends Component {
 
 
         }, (error) => {
+            this.props.hideLoadingBar();
             console.warn(error);
         });
     };
@@ -170,7 +167,6 @@ class PlayerList extends Component {
             return <PlayerForm
                 player={this.state.player}
                 teams={this.state.teams}
-                showFormLoading={this.state.showFormLoading}
                 handleFormSubmit={this.handleFormSubmit}
                 handleInputChange={this.handleInputChange}
                 handleCloseForm={this.handleCloseForm}
@@ -181,4 +177,13 @@ class PlayerList extends Component {
     }
 }
 
-export default PlayerList;
+const mapStateToProps = (state) => ({
+    loading: state.loading
+});
+
+const mapDispatchToProps = dispatch => ({
+    showLoadingBar: () => dispatch(showLoadingBar()),
+    hideLoadingBar: () => dispatch(hideLoadingBar())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlayerList);

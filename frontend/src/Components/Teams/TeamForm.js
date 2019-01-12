@@ -1,15 +1,13 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
 
 const TeamForm = (props) => {
 
-    const {team, showFormLoading} = props;
+    const {team} = props;
 
     return (
         <form onSubmit={props.handleFormSubmit}>
-            {showFormLoading && <LinearProgress/>}
             <h1>
                 {team.id && "Edit Team"}
                 {!team.id && "New Team"}
