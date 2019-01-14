@@ -11,6 +11,7 @@ import TeamForm from "./TeamForm";
 import {connect} from 'react-redux';
 import {hideLoadingBar, showLoadingBar} from "../../Redux/actions/loading";
 import {showSnackbar} from "../../Redux/actions/snackbar";
+import {Link} from "react-router-dom";
 
 const initTeam = {
     name: "",
@@ -55,7 +56,7 @@ class TeamList extends Component {
             <List>
                 {
                     teams.map((team) =>
-                        <ListItem key={team.id}>
+                        <ListItem button component={Link} key={team.id} to={`/teams/${team.id}`}>
                             <ListItemAvatar>
                                 <Avatar>
                                     {team.name.charAt(0)}

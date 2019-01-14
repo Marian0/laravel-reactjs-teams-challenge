@@ -4,6 +4,7 @@ export const userService = {
     getPlayers,
     getTeams,
     syncPlayer,
+    getPlayersFromTeam,
     syncTeam
 };
 
@@ -102,6 +103,19 @@ function getPlayers() {
     };
 
     return fetch(`${process.env.REACT_APP_API_HOST}players`, requestOptions).then(handleResponse);
+}
+
+/**
+ * Get Players from a given team
+ * @returns {Promise<Response>}
+ */
+function getPlayersFromTeam(team_id) {
+    const requestOptions = {
+        method: 'GET',
+        headers: getHeaders(),
+    };
+
+    return fetch(`${process.env.REACT_APP_API_HOST}teams/${team_id}/players`, requestOptions).then(handleResponse);
 }
 
 /**

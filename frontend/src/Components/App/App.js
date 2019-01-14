@@ -24,6 +24,7 @@ import LoginPage from '../LoginPage';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {connect} from 'react-redux';
 import MySnackBar from '../Common/MySnackBar';
+import TeamProfile from "../Teams/TeamProfile";
 
 const drawerWidth = 240;
 
@@ -159,8 +160,10 @@ class App extends Component {
 
                         <div>
                             <PrivateRoute exact path="/" component={AboutPage}/>
+                            <PrivateRoute exact path="/teams/:team_id" component={TeamProfile}/>
                             <PrivateRoute exact path="/teams" component={TeamList}/>
                             <PrivateRoute exact path="/players" component={PlayerList}/>
+
                             <Route path="/login" component={LoginPage}/>
                         </div>
                     </main>
