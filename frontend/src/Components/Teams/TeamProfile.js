@@ -45,7 +45,7 @@ class TeamProfile extends Component {
         if (this.props.loading) {
             return <p>Loading...</p>;
         }
-        
+
         return (
             <div>
                 <h1>Players on {team.name || ""} ({team.player_count || "0"})</h1>
