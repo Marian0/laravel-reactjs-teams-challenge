@@ -65,6 +65,9 @@ Schema for players table (you may add additional fields as needed):
 - run `yarn/npm install`
 - To login use `user@sample.com` and `secret` as password
 
+## Run automated Unit tests
+- run `/vendor/bin/phpunit` on `backend` folder.
+
 ## Author
 - Created by Mariano Peyregne
 - If you have any doubt, suggestion or comment feel free to contact me at: `marianosantafe@gmail.com`
