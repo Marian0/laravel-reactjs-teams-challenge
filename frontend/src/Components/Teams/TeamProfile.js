@@ -49,7 +49,7 @@ class TeamProfile extends Component {
         return (
             <div>
                 <h1>Players on {team.name || ""} ({team.player_count || "0"})</h1>
-                {team.players.length == 0 && <p>No players on this team</p>}
+                {team.players.length === 0 && <p>No players on this team</p>}
                 <List>
                     {
                         team.players.map((player) =>
