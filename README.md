@@ -49,3 +49,23 @@ Schema for players table (you may add additional fields as needed):
 
 - updated_at
 ```
+
+## Backend Installation 
+
+- clone the project and point to `backend` folder
+- run `composer install`
+- create a database and configure it on `.env` file. More information at Laravel docs.
+- run `php artisan migrate`
+- [optional] run database seeders `php artisan db:seed`
+
+
+## Frontend Installation
+- clone project and point to `frontend` folder 
+- run `cp .env.default .env`. Edit this file and configure the variable `REACT_APP_API_HOST` with the host of the API (ending with slash)
+- run `yarn/npm install`
+- To login use `user@sample.com` and `secret` as password
+
+## Author
+- Created by Mariano Peyregne
+- If you have any doubt, suggestion or comment feel free to contact me at: `marianosantafe@gmail.com`
+
