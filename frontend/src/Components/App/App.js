@@ -23,6 +23,7 @@ import PlayerList from '../Players/PlayerList';
 import LoginPage from '../LoginPage';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {connect} from 'react-redux';
+import MySnackBar from '../Common/MySnackBar';
 
 const drawerWidth = 240;
 
@@ -74,7 +75,6 @@ class App extends Component {
     };
 
     render() {
-        console.log(this.props);
         const {classes, theme} = this.props;
 
         const drawer = (
@@ -154,6 +154,9 @@ class App extends Component {
                     </nav>
                     <main className={classes.content}>
                         <div className={classes.toolbar}/>
+
+                        <MySnackBar />
+
                         <div>
                             <PrivateRoute exact path="/" component={AboutPage}/>
                             <PrivateRoute exact path="/teams" component={TeamList}/>

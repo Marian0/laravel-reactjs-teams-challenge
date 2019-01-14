@@ -10,6 +10,7 @@ import PlayerForm from "./PlayerForm";
 import Button from '@material-ui/core/Button';
 import {showLoadingBar, hideLoadingBar} from "../../Redux/actions/loading";
 import {connect} from 'react-redux';
+import {showSnackbar} from "../../Redux/actions/snackbar";
 
 const initPlayer = {
     first_name: "",
@@ -153,7 +154,16 @@ class PlayerList extends Component {
 
         }, (error) => {
             this.props.hideLoadingBar();
-            console.warn(error);
+
+            let message = error.message || "Problem detected";
+
+            if (error.errors) {
+                Object.keys(error.errors).forEach(function (key) {
+                    message += error.errors[key] + '. ';
+                });
+            }
+
+            this.props.showSnackbar(message, "error");
         });
     };
 
@@ -183,7 +193,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = dispatch => ({
     showLoadingBar: () => dispatch(showLoadingBar()),
-    hideLoadingBar: () => dispatch(hideLoadingBar())
+    hideLoadingBar: () => dispatch(hideLoadingBar()),
+    showSnackbar: (message) => dispatch(showSnackbar(message))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerList);

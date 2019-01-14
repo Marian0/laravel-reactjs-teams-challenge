@@ -4,12 +4,11 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import {Paper, withStyles, Grid, TextField, Button, FormControlLabel, Checkbox} from '@material-ui/core';
 import {Face, Fingerprint} from '@material-ui/icons'
-import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
-
+import {showSnackbar} from "../Redux/actions/snackbar";
+import {hideLoadingBar, showLoadingBar} from "../Redux/actions/loading";
+import {connect} from 'react-redux';
 
 const styles = theme => ({
     margin: {
@@ -31,8 +30,6 @@ class LoginPage extends Component {
             username: '',
             password: '',
             submitted: false,
-            loading: false,
-            error: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -50,21 +47,24 @@ class LoginPage extends Component {
         this.setState({submitted: true});
         const {username, password} = this.state;
 
-        console.log("tumama", username, password);
         // stop here if form is invalid
         if (!(username && password)) {
             return;
         }
 
-        this.setState({loading: true});
+        this.props.showLoadingBar();
 
         userService.login(username, password)
             .then(
                 user => {
+                    this.props.hideLoadingBar();
                     const {from} = this.props.location.state || {from: {pathname: "/"}};
                     this.props.history.push(from);
                 },
-                error => this.setState({error, loading: false})
+                error => {
+                    this.props.hideLoadingBar();
+                    this.props.showSnackbar(error.message);
+                }
             );
     }
 
@@ -74,7 +74,7 @@ class LoginPage extends Component {
 
     render() {
         const {classes} = this.props;
-        const {username, password, submitted, loading, error} = this.state;
+        const {username, password, submitted}  = this.state;
 
         return (
             <form name="form" onSubmit={this.handleSubmit}>
@@ -141,31 +141,26 @@ class LoginPage extends Component {
                                     color="primary"
                                     type="submit"
                                     style={{textTransform: "none"}}
-                                    disabled={loading}>Login</Button>
+                                    disabled={this.props.loading}>Login</Button>
                         </Grid>
                     </div>
-                    {loading &&
-                    <LinearProgress/>
-                    }
 
-                    <Snackbar
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={error.length > 0}
-                        onClose={() => this.setState({error: ""})}
-                        autoHideDuration={6000}
-                    >
-                        <SnackbarContent
-                            message={error}
-                        />
-                    </Snackbar>
                 </Paper>
             </form>
         );
     }
 }
 
+const LoginStyle = withStyles(styles)(LoginPage);
 
-export default withStyles(styles)(LoginPage);
+const mapStateToProps = (state) => ({
+    loading: state.loading
+});
+
+const mapDispatchToProps = dispatch => ({
+    showLoadingBar: () => dispatch(showLoadingBar()),
+    hideLoadingBar: () => dispatch(hideLoadingBar()),
+    showSnackbar: (message) => dispatch(showSnackbar(message))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginStyle);

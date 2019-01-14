@@ -10,6 +10,7 @@ import {userService} from '../../Remote/backend';
 import TeamForm from "./TeamForm";
 import {connect} from 'react-redux';
 import {hideLoadingBar, showLoadingBar} from "../../Redux/actions/loading";
+import {showSnackbar} from "../../Redux/actions/snackbar";
 
 const initTeam = {
     name: "",
@@ -173,7 +174,7 @@ class TeamList extends Component {
                 });
             }
 
-            alert(message);
+            this.props.showSnackbar(message, "error");
         });
     };
 
@@ -184,7 +185,8 @@ class TeamList extends Component {
 
 const mapDispatchToProps = dispatch => ({
     showLoadingBar: () => dispatch(showLoadingBar()),
-    hideLoadingBar: () => dispatch(hideLoadingBar())
+    hideLoadingBar: () => dispatch(hideLoadingBar()),
+    showSnackbar: (message) => dispatch(showSnackbar(message))
 });
 
 export default connect(null, mapDispatchToProps)(TeamList);
